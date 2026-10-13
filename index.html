@@ -1555,7 +1555,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
         import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
-        import { getDatabase, ref, get, onValue, update } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js';
+        import { getDatabase, ref, get, onValue, update, set } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js';
 
         // Firebase's web config is safe to include in a public site. Database access is controlled by database.rules.json.
         const firebaseConfig = {
@@ -1627,10 +1627,27 @@
                 });
                 boyCount.textContent = boys.toLocaleString();
                 girlCount.textContent = girls.toLocaleString();
-                countHint.textContent = 'Live team totals · saved to Firebase';
+                countHint.textContent = 'Live team totals';
             }, error => {
                 console.error('Could not read team totals:', error);
                 countHint.textContent = 'Could not load team totals. ' + friendlyError(error);
+            });
+        }
+
+        async function guestNameClaimKey(name) {
+            const normalized = name.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}\p{M}]+/gu, ' ').trim().replace(/\s+/g, ' ');
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(normalized));
+            return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function updateVoteButtons(currentTeam) {
+            joinButtons.forEach(button => {
+                const isCurrent = button.dataset.team === currentTeam;
+                button.classList.toggle('selected', isCurrent);
+                button.disabled = false;
+                button.querySelector('small').textContent = isCurrent
+                    ? 'Your current team'
+                    : 'Change to Team ' + (button.dataset.team === 'boy' ? 'Boy' : 'Girl');
             });
         }
 
@@ -1644,11 +1661,8 @@
                 const guestName = nameSnapshot.val() || localStorage.getItem('babyShowerGuestName') || 'friend';
                 guestNameInput.value = guestName;
                 guestNameInput.disabled = true;
-                joinButtons.forEach(button => {
-                    button.classList.toggle('selected', button.dataset.team === team);
-                    button.disabled = true;
-                });
-                teamMessage.textContent = 'You’re already on Team ' + (team === 'boy' ? 'Boy' : 'Girl') + ', ' + guestName + '! Your vote is saved.';
+                updateVoteButtons(team);
+                teamMessage.textContent = 'You’re on Team ' + (team === 'boy' ? 'Boy' : 'Girl') + ', ' + guestName + '. Choose either team below to change your vote.';
             } catch (error) {
                 console.error('Could not check existing vote:', error);
                 countHint.textContent = 'Could not check your saved vote. ' + friendlyError(error);
@@ -1681,17 +1695,52 @@
             try {
                 const signedInUser = await authReady;
                 if (!db || !signedInUser) throw new Error('Firebase is not connected yet.');
-                const updates = {};
-                updates['teamVotes/' + signedInUser.uid] = team;
-                updates['guestNames/' + signedInUser.uid] = { guestName, createdAt: Date.now() };
-                await update(ref(db), updates);
-                localStorage.setItem('babyShowerGuestName', guestName);
-                guestNameInput.disabled = true;
-                joinButtons.forEach(button => button.classList.toggle('selected', button.dataset.team === team));
-                teamMessage.textContent = guestName + ', you joined Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is saved.';
+                const voteRef = ref(db, 'teamVotes/' + signedInUser.uid);
+                const existingVote = await get(voteRef);
+                if (existingVote.exists() && existingVote.val() === team) {
+                    updateVoteButtons(team);
+                    teamMessage.textContent = 'You’re already on Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '. Choose the other team to change your vote.';
+                    joinButtons.forEach(button => button.disabled = false);
+                    return;
+                }
+                if (existingVote.exists()) {
+                    await set(voteRef, team);
+                } else {
+                    const nameKey = await guestNameClaimKey(guestName);
+                    const claimRef = ref(db, 'nameClaims/' + nameKey);
+                    const claimSnapshot = await get(claimRef);
+                    if (claimSnapshot.exists() && claimSnapshot.val() !== signedInUser.uid) {
+                        teamMessage.textContent = 'That name has already been used. Please try your full name or add a last initial.';
+                        joinButtons.forEach(button => button.disabled = false);
+                        return;
+                    }
+                    const updates = {};
+                    updates['nameClaims/' + nameKey] = signedInUser.uid;
+                    updates['teamVotes/' + signedInUser.uid] = team;
+                    updates['guestNames/' + signedInUser.uid] = { guestName, createdAt: Date.now() };
+                    await update(ref(db), updates);
+                    guestNameInput.disabled = true;
+                    localStorage.setItem('babyShowerGuestName', guestName);
+                }
+                updateVoteButtons(team);
+                teamMessage.textContent = existingVote.exists()
+                    ? 'Your prediction changed to Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is updated.'
+                    : guestName + ', you joined Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is saved.';
             } catch (error) {
                 console.error('Could not save team choice to Firebase:', error);
-                teamMessage.textContent = 'Your vote was not saved. ' + friendlyError(error);
+                let message = 'Your vote was not saved. ' + friendlyError(error);
+                if (db && user) {
+                    try {
+                        const nameKey = await guestNameClaimKey(guestName);
+                        const claimSnapshot = await get(ref(db, 'nameClaims/' + nameKey));
+                        if (claimSnapshot.exists() && claimSnapshot.val() !== user.uid) {
+                            message = 'That name has already been used. Please try your full name or add a last initial.';
+                        }
+                    } catch (claimError) {
+                        console.error('Could not check name availability:', claimError);
+                    }
+                }
+                teamMessage.textContent = message;
                 joinButtons.forEach(button => button.disabled = false);
             }
         }
