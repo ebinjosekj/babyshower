@@ -1,0 +1,29 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "teamVotes": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth !== null && auth.uid === $uid && !data.exists()",
+        ".validate": "newData.isString() && (newData.val() === 'boy' || newData.val() === 'girl')"
+      }
+    },
+    "guestNames": {
+      "$uid": {
+        ".read": "auth !== null && auth.uid === $uid",
+        ".write": "auth !== null && auth.uid === $uid && !data.exists()",
+        ".validate": "newData.hasChildren(['guestName', 'createdAt'])",
+        "guestName": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 40"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

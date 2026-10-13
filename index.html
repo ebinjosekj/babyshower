@@ -1541,7 +1541,7 @@
             <div class="vote-message" id="teamMessage" aria-live="polite"></div>
             <div class="team-counts" aria-live="polite"><span>🩵 Team Boy <b id="boyCount">0</b></span><span>🩷 Team
                     Girl <b id="girlCount">0</b></span></div>
-            <p class="count-hint" id="countHint">Live team totals appear when the database is connected.</p>
+            <p class="count-hint" id="countHint">Connecting to Firebase for shared team totals…</p>
         </section>
         <section class="contact reveal">
             <div class="kicker">Questions? Just call</div>
@@ -1552,14 +1552,26 @@
         </section>
         <footer class="footer">Made with love · November 21, 2026 · Kitchener, Ontario</footer>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
+        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js';
+        import { getDatabase, ref, get, onValue, update } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-database.js';
+
+        // Firebase's web config is safe to include in a public site. Database access is controlled by database.rules.json.
+        const firebaseConfig = {
+            apiKey: 'AIzaSyC30pzRrshcRNuSEMDqQafnzKroVcjLmk',
+            authDomain: 'babyshower-bf940.firebaseapp.com',
+            databaseURL: 'https://babyshower-bf940-default-rtdb.firebaseio.com',
+            projectId: 'babyshower-bf940',
+            appId: '1:241460436587:web:6f427cc9a31340ad999b2e'
+        };
+
         const eventStart = new Date('2026-11-21T18:00:00-05:00');
         const eventEnd = new Date('2026-11-21T21:00:00-05:00');
         const pad = n => String(n).padStart(2, '0');
         function updateCountdown() {
             let distance = eventStart.getTime() - Date.now();
-            if (distance <= 0) { document.querySelector('.countdown').innerHTML = '<div class="time"><strong>It’s</strong><span>celebration time!</span></div>'; return }
+            if (distance <= 0) { document.querySelector('.countdown').innerHTML = '<div class="time"><strong>It’s</strong><span>celebration time!</span></div>'; return; }
             const days = Math.floor(distance / 86400000); distance %= 86400000;
             const hours = Math.floor(distance / 3600000); distance %= 3600000;
             const minutes = Math.floor(distance / 60000); const seconds = Math.floor((distance % 60000) / 1000);
@@ -1569,61 +1581,139 @@
             document.getElementById('seconds').textContent = pad(seconds);
         }
         updateCountdown(); setInterval(updateCountdown, 1000);
-        const googleDates = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+        const googleDates = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
         const title = 'A Little Love Is On The Way — Nikki & Ebin Baby Shower & Gender Reveal';
         const address = '239 Eden Oak Trail, Kitchener, ON N2A 0L5';
         const description = 'Join Nikki and Ebin for a baby shower and gender reveal!';
         document.getElementById('googleCal').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + googleDates(eventStart) + '/' + googleDates(eventEnd) + '&details=' + encodeURIComponent(description) + '&location=' + encodeURIComponent(address);
-        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
-        const SUPABASE_PUBLISHABLE_KEY = 'YOUR_SUPABASE_PUBLISHABLE_KEY';
+
         const guestNameInput = document.getElementById('guestName');
         const teamMessage = document.getElementById('teamMessage');
         const countHint = document.getElementById('countHint');
-        let dbClient = null;
-        if (window.supabase && SUPABASE_URL.startsWith('https://') && SUPABASE_PUBLISHABLE_KEY !== 'YOUR_SUPABASE_PUBLISHABLE_KEY') {
-            dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-            countHint.textContent = 'Live team totals from all guests';
-        }
-        async function refreshCounts() {
-            if (!dbClient) return;
-            const results = await Promise.all([
-                dbClient.from('team_joins').select('team', { count: 'exact', head: true }).eq('team', 'boy'),
-                dbClient.from('team_joins').select('team', { count: 'exact', head: true }).eq('team', 'girl')
-            ]);
-            if (results[0].error || results[1].error) { countHint.textContent = 'Could not load live totals. Check the Supabase setup.'; return }
-            document.getElementById('boyCount').textContent = results[0].count || 0;
-            document.getElementById('girlCount').textContent = results[1].count || 0;
-        }
-        refreshCounts();
-        setInterval(refreshCounts, 30000);
-        document.querySelectorAll('.team-card').forEach(button => button.addEventListener('click', async () => {
-            const name = guestNameInput.value.trim().replace(/\s+/g, ' ');
-            if (!name) { teamMessage.textContent = 'Enter your name first, then choose your team.'; guestNameInput.classList.add('needs-name'); guestNameInput.focus(); return }
-            const signup = { name: name, team: button.dataset.team };
-            guestNameInput.classList.remove('needs-name');
-            document.querySelectorAll('.team-card').forEach(card => card.disabled = true);
-            teamMessage.textContent = 'Joining your team…';
-            if (dbClient) {
-                const result = await dbClient.from('team_joins').insert({ guest_name: signup.name, team: signup.team });
-                if (result.error) { teamMessage.textContent = 'Could not save your team yet. Please try again.'; document.querySelectorAll('.team-card').forEach(card => card.disabled = false); return }
-                await refreshCounts();
-            } else {
-                try { localStorage.setItem('babyShowerJoin', JSON.stringify(signup)) } catch (_) { }
-                countHint.textContent = 'Saved on this device. Connect the database for shared team totals.';
-            }
-            document.querySelectorAll('.team-card').forEach(card => { card.classList.toggle('selected', card === button); card.disabled = false });
-            teamMessage.textContent = name + ', you joined Team ' + (signup.team === 'boy' ? 'Boy' : 'Girl') + '!';
-        }));
-        guestNameInput.addEventListener('input', () => guestNameInput.classList.remove('needs-name'));
+        const boyCount = document.getElementById('boyCount');
+        const girlCount = document.getElementById('girlCount');
+        const joinButtons = [...document.querySelectorAll('.team-card')];
+        const savedName = localStorage.getItem('babyShowerGuestName');
+        if (savedName) guestNameInput.value = savedName;
+
+        let app;
+        let db;
+        let user = null;
+        countHint.textContent = 'Connecting to shared team totals…';
         try {
-            const savedJoin = JSON.parse(localStorage.getItem('babyShowerJoin') || 'null');
-            if (savedJoin && savedJoin.name && ['boy', 'girl'].includes(savedJoin.team)) {
-                guestNameInput.value = savedJoin.name;
-                document.querySelector('[data-team="' + savedJoin.team + '"]').classList.add('selected');
+            app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+        } catch (error) {
+            console.error('Firebase initialization failed:', error);
+            countHint.textContent = 'Could not initialize Firebase. Check the site configuration.';
+        }
+
+        function friendlyError(error) {
+            const code = error?.code || '';
+            if (code === 'auth/unauthorized-domain') return 'Add ebinjosekj.github.io under Firebase Authentication → Settings → Authorized domains.';
+            if (code === 'auth/operation-not-allowed') return 'Enable Anonymous sign-in in Firebase Authentication → Sign-in method.';
+            if (code === 'PERMISSION_DENIED' || code === 'permission_denied') return 'Publish the Realtime Database rules from database.rules.json.';
+            return 'Check your internet connection and Firebase project settings, then try again.';
+        }
+
+        function subscribeToCounts() {
+            onValue(ref(db, 'teamVotes'), snapshot => {
+                let boys = 0;
+                let girls = 0;
+                snapshot.forEach(child => {
+                    if (child.val() === 'boy') boys++;
+                    if (child.val() === 'girl') girls++;
+                });
+                boyCount.textContent = boys.toLocaleString();
+                girlCount.textContent = girls.toLocaleString();
+                countHint.textContent = 'Live team totals · saved to Firebase';
+            }, error => {
+                console.error('Could not read team totals:', error);
+                countHint.textContent = 'Could not load team totals. ' + friendlyError(error);
+            });
+        }
+
+        async function showExistingVote() {
+            if (!db || !user) return;
+            try {
+                const voteSnapshot = await get(ref(db, 'teamVotes/' + user.uid));
+                if (!voteSnapshot.exists()) return;
+                const team = voteSnapshot.val();
+                const nameSnapshot = await get(ref(db, 'guestNames/' + user.uid + '/guestName'));
+                const guestName = nameSnapshot.val() || localStorage.getItem('babyShowerGuestName') || 'friend';
+                guestNameInput.value = guestName;
+                guestNameInput.disabled = true;
+                joinButtons.forEach(button => {
+                    button.classList.toggle('selected', button.dataset.team === team);
+                    button.disabled = true;
+                });
+                teamMessage.textContent = 'You’re already on Team ' + (team === 'boy' ? 'Boy' : 'Girl') + ', ' + guestName + '! Your vote is saved.';
+            } catch (error) {
+                console.error('Could not check existing vote:', error);
+                countHint.textContent = 'Could not check your saved vote. ' + friendlyError(error);
             }
-        } catch (_) { } const observer = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target) } }), { threshold: .12 });
+        }
+
+        const authReady = db
+            ? signInAnonymously(getAuth(app)).then(credential => {
+                user = credential.user;
+                subscribeToCounts();
+                return showExistingVote().then(() => user);
+            }).catch(error => {
+                console.error('Firebase sign-in failed:', error);
+                countHint.textContent = 'Firebase sign-in failed. ' + friendlyError(error);
+                return null;
+            })
+            : Promise.resolve(null);
+
+        async function joinTeam(team) {
+            const guestName = guestNameInput.value.trim().replace(/\s+/g, ' ');
+            if (!guestName) {
+                guestNameInput.classList.add('needs-name');
+                guestNameInput.focus();
+                teamMessage.textContent = 'Enter your name first, then choose a team.';
+                return;
+            }
+            guestNameInput.classList.remove('needs-name');
+            joinButtons.forEach(button => button.disabled = true);
+            teamMessage.textContent = 'Saving your team choice to Firebase…';
+            try {
+                const signedInUser = await authReady;
+                if (!db || !signedInUser) throw new Error('Firebase is not connected yet.');
+                const updates = {};
+                updates['teamVotes/' + signedInUser.uid] = team;
+                updates['guestNames/' + signedInUser.uid] = { guestName, createdAt: Date.now() };
+                await update(ref(db), updates);
+                localStorage.setItem('babyShowerGuestName', guestName);
+                guestNameInput.disabled = true;
+                joinButtons.forEach(button => button.classList.toggle('selected', button.dataset.team === team));
+                teamMessage.textContent = guestName + ', you joined Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is saved.';
+            } catch (error) {
+                console.error('Could not save team choice to Firebase:', error);
+                teamMessage.textContent = 'Your vote was not saved. ' + friendlyError(error);
+                joinButtons.forEach(button => button.disabled = false);
+            }
+        }
+        joinButtons.forEach(button => button.addEventListener('click', () => joinTeam(button.dataset.team)));
+        guestNameInput.addEventListener('input', () => guestNameInput.classList.remove('needs-name'));
+
+        const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+        }), { threshold: .12 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        document.addEventListener('pointerdown', event => { for (let i = 0; i < 5; i++) { const dot = document.createElement('i'); dot.className = 'spark'; dot.style.left = event.clientX + 'px'; dot.style.top = event.clientY + 'px'; dot.style.setProperty('--x', (Math.random() * 70 - 35) + 'px'); dot.style.setProperty('--y', (Math.random() * -65 - 10) + 'px'); document.body.appendChild(dot); setTimeout(() => dot.remove(), 700) } });
+        document.addEventListener('pointerdown', event => {
+            for (let i = 0; i < 5; i++) {
+                const dot = document.createElement('i');
+                dot.className = 'spark';
+                dot.style.left = event.clientX + 'px';
+                dot.style.top = event.clientY + 'px';
+                dot.style.setProperty('--x', (Math.random() * 70 - 35) + 'px');
+                dot.style.setProperty('--y', (Math.random() * -65 - 10) + 'px');
+                document.body.appendChild(dot);
+                setTimeout(() => dot.remove(), 700);
+            }
+        });
     </script>
 </body>
 
