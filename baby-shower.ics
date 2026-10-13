@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Nikki and Ebin//Baby Shower//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:baby-shower-nikki-ebin-20261121@example.invalid
+DTSTAMP:20261013T190000Z
+DTSTART;TZID=America/Toronto:20261121T180000
+DTEND;TZID=America/Toronto:20261121T210000
+SUMMARY:A Little Love Is On The Way — Nikki & Ebin
+DESCRIPTION:Join Nikki and Ebin for their baby shower and gender reveal!
+LOCATION:239 Eden Oak Trail\, Kitchener\, ON N2A 0L5
+URL:https://www.google.com/maps/search/?api=1&query=239+Eden+Oak+Trail%2C+Kitchener%2C+ON+N2A+0L5
+END:VEVENT
+END:VCALENDAR
