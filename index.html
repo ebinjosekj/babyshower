@@ -1513,6 +1513,143 @@
             .team-card:hover { transform: translateY(-5px) scale(1.02) }
             .button:hover, .detail-value a:hover, .phones a:hover { filter: brightness(1.08) }
         }
+
+        /* A polished pink and blue palette for the shower celebration. */
+        :root {
+            color-scheme: light;
+            --bg: #fff7fb;
+            --panel: #ffffff;
+            --ink: #38283d;
+            --muted: #75677d;
+            --gold: #d99d56;
+            --blue: #70b8e7;
+            --rose: #e982ad;
+            --violet: #aa8de0;
+            --mint: #70c9b5;
+            --line: #805a7926;
+        }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+        }
+        .nav { color: #38283d }
+        .brand { text-shadow: 0 1px 14px #fff }
+        .nav a {
+            color: #43314a;
+            border-color: #ffffffc9;
+            background: #fff9;
+            box-shadow: 0 5px 22px #33204418;
+        }
+        .nav a:hover { background: #e982ad; color: white }
+        .hero:before {
+            background: linear-gradient(0deg, #5c37652b, transparent 38%),
+                linear-gradient(90deg, #6f86b51a, transparent 48%, #d379a91f);
+        }
+        .hero-content {
+            border-color: #e982ad55;
+            background: #fff9fcf0;
+            box-shadow: 0 18px 50px #663a5a2c;
+        }
+        .scroll-cue { color: white }
+        .intro {
+            background: radial-gradient(ellipse at 14% 14%, #e982ad20, transparent 44%),
+                radial-gradient(ellipse at 88% 18%, #70b8e72b, transparent 46%), var(--bg);
+        }
+        .kicker, .detail-label { color: #b85e89 }
+        .intro p, .team>p, .contact p { color: var(--muted) }
+        .time strong {
+            color: #9c6cc8;
+            text-shadow: 0 0 14px #b68fe755;
+        }
+        .time span { color: var(--muted) }
+        .details { background: #f7edf8 }
+        .detail-card {
+            overflow: hidden;
+            border: 1px solid #dfcbe2;
+            border-radius: 26px;
+            background: white;
+            box-shadow: 0 24px 70px #754c7920;
+        }
+        .detail { border-color: #eaddeb }
+        .detail-icon { color: #d977a5 }
+        .detail-value a { border-color: #d38db0 }
+        .detail-value a:hover { color: #a84f7c }
+        .button {
+            color: #5e3d69;
+            border-color: #d4b5dc;
+            background: #fff8fc;
+        }
+        .button:hover { color: white; background: #b889d4 }
+        .detail-art {
+            background: radial-gradient(circle at 22% 22%, #ffffff67 0 2px, transparent 3px),
+                radial-gradient(circle at 76% 68%, #ffffff55 0 2px, transparent 3px),
+                linear-gradient(145deg, #f1b7d0, #ae9be5 54%, #77c2e9);
+            background-size: auto, auto, 180% 180%;
+            animation: pastelFlow 12s ease-in-out infinite alternate;
+        }
+        .team {
+            color: var(--ink);
+            background: linear-gradient(125deg, #fff0f6, #f3efff 48%, #eaf7ff 100%);
+            background-size: 220% 220%;
+            animation: pastelFlow 16s ease-in-out infinite alternate;
+        }
+        .team:before { background: linear-gradient(var(--rose), var(--blue)) }
+        .team-name-label { color: #805d89 }
+        .team-name-input {
+            color: #38283d;
+            border-color: #d8bfdc;
+            background: #ffffffd9;
+            box-shadow: 0 8px 25px #875d8710;
+        }
+        .team-name-input::placeholder { color: #9987a0 }
+        .team-name-input:focus {
+            border-color: #a789d7;
+            box-shadow: 0 0 0 4px #b291df30, 0 0 24px #e982ad30;
+        }
+        .team-card {
+            color: #44334a;
+            border-radius: 20px;
+            background: #ffffffd9;
+            box-shadow: 0 12px 30px #694f7920;
+        }
+        .team-card:hover, .team-card.selected {
+            background: color-mix(in srgb, var(--team), white 82%);
+            box-shadow: 0 18px 36px color-mix(in srgb, var(--team), transparent 72%);
+        }
+        .vote-message, .team-counts { color: #54435a }
+        .team-counts b { color: #a76bb9 }
+        .count-hint { color: #75677d !important }
+        .contact {
+            background: linear-gradient(115deg, #fff4f8, #f4f1ff 55%, #edf8ff);
+        }
+        .contact .kicker { color: #b85e89 }
+        .phones a { color: #594463 }
+        .phones a:hover { color: #c45c8d }
+        .footer {
+            color: #6d5b76;
+            background: #f0e5f2;
+            border-top: 1px solid #dfcde3;
+        }
+        .baby-keepsakes .teddy { filter: drop-shadow(0 6px 9px #86588828) }
+        .baby-keepsakes { animation: keepsakeFloat 4s ease-in-out infinite }
+        .team-card { animation: cardGlow 4.5s ease-in-out infinite }
+        .team-card.girl { animation-delay: -2.25s }
+        .team-card:focus-visible, .button:focus-visible, .nav a:focus-visible,
+        .phones a:focus-visible, .scroll-cue:focus-visible {
+            outline: 3px solid #8b70c8;
+            outline-offset: 4px;
+        }
+        @keyframes pastelFlow {
+            0% { background-position: 0% 40% }
+            100% { background-position: 100% 60% }
+        }
+        @keyframes keepsakeFloat {
+            0%, 100% { transform: translateY(0) }
+            50% { transform: translateY(-7px) }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .detail-art, .team, .baby-keepsakes { animation: none }
+        }
     </style>
 </head>
 
