@@ -1762,200 +1762,206 @@
             .voter-group { transition: none }
         }
 
-        /* Champagne invitation animation inside the event art panel */
+        /* Storybook postcard in the event art panel */
         .detail-art.invitation-art {
             isolation: isolate;
             min-height: 420px;
+            padding: clamp(18px, 4vw, 38px);
             background:
-                radial-gradient(ellipse at 50% 38%, #fffdf3 0, #f8efd9 49%, transparent 75%),
-                linear-gradient(155deg, #f4ead7, #e9dcc3 68%, #f8f0e2);
+                radial-gradient(ellipse at 14% 18%, #f8ead2 0, transparent 35%),
+                radial-gradient(ellipse at 90% 90%, #9ba88e 0, transparent 48%),
+                linear-gradient(135deg, #d4cbb1, #aebaa4 58%, #d8c7aa);
             animation: none
         }
 
         .detail-art.invitation-art:before,
         .detail-art.invitation-art:after { content: none; animation: none }
 
+        .detail-art.invitation-art:before,
         .invitation-visual {
             position: absolute;
             inset: 0;
+            isolation: isolate;
+            display: grid;
+            place-items: center;
             overflow: hidden;
-            background: radial-gradient(ellipse at 50% 50%, #fff8e61c, transparent 72%)
+            border: 1px solid #fff9e8a8;
+            background: linear-gradient(140deg, #e6ddc7aa, #71856b35 55%, #f4e5ce80)
         }
 
-        .invitation-rays {
-            position: absolute;
-            inset: -20% -10% 30%;
-            background: conic-gradient(from 255deg at 50% 0%, transparent 0 9deg, #fff6de45 11deg 15deg, transparent 17deg 25deg, #fff8e94a 27deg 31deg, transparent 34deg 43deg, #fff8e93d 45deg 51deg, transparent 53deg 360deg);
-            filter: blur(14px);
+        .postcard-paper {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: min(82%, 370px);
+            min-height: 330px;
+            padding: 42px 26px 36px;
+            color: #4e5143;
+            text-align: center;
+            background: linear-gradient(135deg, #fffdf4, #f7f0df 68%, #eee4cf);
+            border: 1px solid #fffefa;
+            box-shadow: 0 22px 52px #403b2e35, 0 3px 8px #3c342321;
+            transform: rotate(-1.5deg) translateY(14px);
             opacity: 0;
-            animation: panel-rays-in .65s ease-out .08s forwards
+            animation: postcard-arrive .9s cubic-bezier(.2,.75,.25,1) .12s forwards, postcard-float 6s ease-in-out 1.1s infinite
         }
 
-        .invitation-rays:after {
-            content: "";
+        .postcard-paper:before,
+        .postcard-paper:after {
+            content: "✦";
             position: absolute;
-            inset: 0;
-            background: linear-gradient(108deg, transparent 42%, #fffbe6a8 49%, #fff8dc 50%, #fffbe6a8 51%, transparent 58%);
-            opacity: 0;
-            transform: translateX(-65%);
-            animation: panel-light-sweep 1.05s cubic-bezier(.2,.7,.2,1) .16s forwards
+            color: #b58c52;
+            font-size: 13px;
+            opacity: .75
         }
 
-        .invitation-cloud {
+        .postcard-paper:before { top: 20px; left: 22px }
+        .postcard-paper:after { right: 22px; bottom: 19px; font-size: 10px }
+
+        .postcard-sprig {
             position: absolute;
-            width: 74%;
-            height: 31%;
-            border-radius: 50%;
-            background:
-                radial-gradient(ellipse at 50% 70%, #fffdf6e8 0 18%, transparent 56%),
-                radial-gradient(ellipse at 28% 56%, #fffaf0e5 0 25%, transparent 59%),
-                radial-gradient(ellipse at 72% 54%, #fffaf0e8 0 25%, transparent 60%),
-                radial-gradient(ellipse at 50% 44%, #dfc99f58 0 32%, transparent 68%);
-            filter: blur(14px);
-            opacity: 0;
-            animation: panel-cloud-in .75s ease-out .1s forwards, panel-cloud-drift 21s ease-in-out .9s infinite alternate
+            top: 16px;
+            right: 17px;
+            width: 52px;
+            height: 62px;
+            color: #829079;
+            transform: rotate(8deg)
         }
 
-        .invitation-cloud.left { left: -29%; top: 12% }
-        .invitation-cloud.right { right: -31%; top: 31%; animation-delay: .4s, -12s }
-        .invitation-cloud.bottom { left: 18%; bottom: -22%; width: 86%; animation-delay: .55s, -18s }
+        .postcard-sprig path { fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round }
+        .postcard-sprig ellipse { fill: #9da88d; stroke: #78846f; stroke-width: .6 }
 
-        .invitation-particles { position: absolute; inset: 0; opacity: 0; animation: panel-particles-in .55s ease-out .35s forwards }
-        .invitation-particles i {
-            position: absolute;
-            left: var(--x);
-            top: var(--y);
-            width: var(--size, 3px);
-            aspect-ratio: 1;
-            border-radius: 50%;
-            background: #fff9df;
-            box-shadow: 0 0 7px 2px #d7b56a80, 0 0 15px 3px #e8cf8d58;
-            animation: panel-particle-float var(--duration, 7s) ease-in-out var(--delay, 0s) infinite alternate
-        }
-
-        .invitation-particles i:nth-child(1) { --x: 18%; --y: 24%; --size: 4px; --duration: 6s; --delay: -2s }
-        .invitation-particles i:nth-child(2) { --x: 78%; --y: 23%; --size: 3px; --duration: 7s; --delay: -4s }
-        .invitation-particles i:nth-child(3) { --x: 86%; --y: 63%; --size: 4px; --duration: 5.5s; --delay: -1s }
-        .invitation-particles i:nth-child(4) { --x: 12%; --y: 69%; --size: 3px; --duration: 7.5s; --delay: -5s }
-        .invitation-particles i:nth-child(5) { --x: 34%; --y: 14%; --size: 3px; --duration: 6.5s; --delay: -2s }
-        .invitation-particles i:nth-child(6) { --x: 65%; --y: 84%; --size: 4px; --duration: 8s; --delay: -6s }
-        .invitation-particles i:nth-child(7) { --x: 91%; --y: 43%; --size: 3px; --duration: 5.8s; --delay: -3s }
-
-        .invitation-arch {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: min(78%, 380px);
-            aspect-ratio: 1;
-            overflow: visible;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            filter: drop-shadow(0 0 5px #d6b25e80) drop-shadow(0 0 18px #e6cf8a66);
-            animation: panel-arch-in .8s cubic-bezier(.2,.7,.2,1) .48s forwards, panel-arch-breathe 3.8s ease-in-out 1.3s infinite
-        }
-
-        .invitation-arch circle { fill: none; stroke: url(#panelGold); stroke-width: 1.5; stroke-dasharray: 1477; stroke-dashoffset: 1477; animation: panel-arch-draw 1.05s cubic-bezier(.2,.7,.2,1) .38s forwards }
-
-        .invitation-hearts {
-            position: absolute;
-            top: 38%;
-            left: 50%;
-            width: 94px;
-            height: 32px;
-            transform: translate(-50%, -50%)
-        }
-
-        .invitation-heart {
-            position: absolute;
-            top: 50%;
-            width: 24px;
-            height: 23px;
-            overflow: visible;
-            fill: #b48d4c;
-            filter: drop-shadow(0 0 5px #cfad6255);
-            opacity: 0
-        }
-
-        .invitation-heart.left { right: calc(50% + 10px); animation: panel-heart-left .65s cubic-bezier(.2,.8,.25,1) .85s forwards, panel-heart-glow 3s ease-in-out 1.6s infinite }
-        .invitation-heart.right { left: calc(50% + 10px); animation: panel-heart-right .65s cubic-bezier(.2,.8,.25,1) .85s forwards, panel-heart-glow 3s ease-in-out 1.6s infinite }
-        .invitation-heart.center { left: 50%; top: 49%; width: 13px; height: 13px; fill: #d5b360; transform: translate(-50%, -50%) scale(.5); animation: panel-heart-center .48s cubic-bezier(.16,1,.3,1) 1.38s forwards, panel-heart-glow 2.8s ease-in-out 1.9s infinite }
-
-        .art-center.invitation-copy {
-            position: absolute;
-            top: 61%;
-            left: 50%;
-            width: 86%;
-            transform: translate(-50%, -50%);
-            color: #59472f;
-            text-align: center
-        }
-
-        .art-center.invitation-copy .invitation-title {
+        .postcard-kicker,
+        .postcard-footer {
             margin: 0;
-            color: #59472f;
-            font: 500 clamp(27px, 3.1vw, 39px)/1.02 "Playfair Display", serif;
-            letter-spacing: -.035em;
-            text-shadow: 0 1px 18px #fffaf0a8;
-            opacity: 0;
-            animation: panel-title-in .65s cubic-bezier(.2,.7,.2,1) 1.55s forwards
-        }
-
-        .invitation-title span { display: block; font-style: italic }
-
-        .art-center.invitation-copy small {
-            display: block;
-            margin-top: 14px;
-            color: #846e4c;
+            color: #91805f;
             font: 600 9px/1.5 "DM Sans", sans-serif;
-            letter-spacing: .18em;
-            opacity: 0;
-            animation: panel-title-in .5s ease-out 1.95s forwards
+            letter-spacing: .2em;
+            text-transform: uppercase
         }
 
-        .details:not(.visible) .invitation-visual * { animation-play-state: paused }
+        .postcard-heading {
+            margin: 20px 0 15px;
+            color: #4f5145;
+            font: 500 clamp(28px, 3.2vw, 39px)/1.05 "Playfair Display", serif;
+            letter-spacing: -.035em
+        }
 
-        @keyframes panel-rays-in { from { opacity: 0 } to { opacity: .7 } }
-        @keyframes panel-light-sweep { 0% { opacity: 0; transform: translateX(-65%) } 18% { opacity: .85 } 100% { opacity: 0; transform: translateX(65%) } }
-        @keyframes panel-cloud-in { from { opacity: 0 } to { opacity: .74 } }
-        @keyframes panel-cloud-drift { from { transform: translate3d(-2%, 0, 0) } to { transform: translate3d(3%, -5%, 0) } }
-        @keyframes panel-particles-in { from { opacity: 0 } to { opacity: .9 } }
-        @keyframes panel-particle-float { from { transform: translate3d(0, 5px, 0); opacity: .48 } to { transform: translate3d(6px, -8px, 0); opacity: 1 } }
-        @keyframes panel-arch-in { from { opacity: 0; scale: .88 } to { opacity: .94; scale: 1 } }
-        @keyframes panel-arch-draw { to { stroke-dashoffset: 0 } }
-        @keyframes panel-arch-breathe { 0%, 100% { filter: drop-shadow(0 0 5px #d6b25e80) drop-shadow(0 0 18px #e6cf8a66) } 50% { filter: drop-shadow(0 0 8px #d6b25eaa) drop-shadow(0 0 26px #e6cf8a88) } }
-        @keyframes panel-heart-left { from { opacity: 0; transform: translate(-21px, -50%) scale(.7) } to { opacity: 1; transform: translate(0, -50%) scale(1) } }
-        @keyframes panel-heart-right { from { opacity: 0; transform: translate(21px, -50%) scale(.7) } to { opacity: 1; transform: translate(0, -50%) scale(1) } }
-        @keyframes panel-heart-center { 0% { opacity: 0; transform: translate(-50%, -50%) scale(.4) } 70% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1) } }
-        @keyframes panel-heart-glow { 0%, 100% { filter: drop-shadow(0 0 4px #cfad6255) } 50% { filter: drop-shadow(0 0 9px #cfad62aa) } }
-        @keyframes panel-title-in { from { opacity: 0; translate: 0 9px; filter: blur(3px) } to { opacity: 1; translate: 0 0; filter: blur(0) } }
+        .postcard-heading em {
+            display: block;
+            margin-top: 4px;
+            color: #9a7851;
+            font-weight: 500
+        }
+
+        .postcard-rule {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            width: 76%;
+            margin: 0 0 16px;
+            color: #b68f58;
+            font-size: 10px
+        }
+
+        .postcard-rule:before,
+        .postcard-rule:after { content: ""; height: 1px; flex: 1; background: #cbb68e }
+
+        .postcard-names {
+            margin: 0 0 7px;
+            color: #616453;
+            font: italic 500 18px/1.3 "Playfair Display", serif
+        }
+
+        .postcard-footer { font-size: 8px; letter-spacing: .16em }
+
+        .postcard-petals i {
+            position: absolute;
+            z-index: 0;
+            top: var(--top);
+            left: var(--left);
+            width: 10px;
+            height: 16px;
+            border-radius: 90% 10% 90% 10%;
+            background: linear-gradient(145deg, #f4e5c9, #b89a6e);
+            opacity: 0;
+            animation: petal-drift var(--duration) ease-in-out var(--delay) infinite
+        }
+
+        .postcard-petals i:nth-child(1) { --top: 13%; --left: 16%; --duration: 6s; --delay: -.8s }
+        .postcard-petals i:nth-child(2) { --top: 24%; --left: 83%; --duration: 7s; --delay: -3s }
+        .postcard-petals i:nth-child(3) { --top: 78%; --left: 12%; --duration: 6.5s; --delay: -4s }
+        .postcard-petals i:nth-child(4) { --top: 72%; --left: 88%; --duration: 7.5s; --delay: -2s }
+
+        .details:not(.visible) .postcard-paper,
+        .details:not(.visible) .postcard-petals i { animation-play-state: paused }
+
+        @keyframes postcard-arrive { to { opacity: 1; transform: rotate(-1.5deg) translateY(0) } }
+        @keyframes postcard-float { 0%, 100% { transform: rotate(-1.5deg) translateY(0) } 50% { transform: rotate(-.5deg) translateY(-5px) } }
+        @keyframes petal-drift { 0% { opacity: 0; transform: translate3d(0,-8px,0) rotate(0) } 18% { opacity: .72 } 75% { opacity: .6 } 100% { opacity: 0; transform: translate3d(18px,42px,0) rotate(110deg) } }
+
+        .nav { display: flex; position: absolute; padding-top: 17px; padding-bottom: 17px; gap: 18px }
+        .nav .brand {
+            flex: 0 0 auto;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: #fffaf2;
+            font-size: 20px;
+            letter-spacing: normal;
+            text-transform: none
+        }
+        .nav-links { display: flex; justify-content: flex-end; align-items: center; gap: 8px }
+        .nav .nav-links a {
+            padding: 10px 13px;
+            border: 1px solid #fff9e866;
+            border-radius: 999px;
+            background: #241b1b63;
+            color: #fffaf2;
+            font-size: 9px;
+            letter-spacing: .11em;
+            white-space: nowrap
+        }
+        .nav .nav-links a:hover,
+        .nav .nav-links a:focus-visible { background: #fff8eb; border-color: #fff8eb; color: #514534 }
+        .nav .nav-links a:focus-visible { outline: 2px solid #fff; outline-offset: 3px }
+        .contact { scroll-margin-top: 22px }
+        #welcome, #details, #teams { scroll-margin-top: 20px }
 
         @media(max-width:700px) {
-            .detail-art.invitation-art { min-height: 260px }
-            .invitation-arch { width: min(84%, 270px) }
-            .invitation-hearts { top: 37%; scale: .88 }
-            .art-center.invitation-copy { top: 61%; width: 91% }
-            .art-center.invitation-copy .invitation-title { font-size: clamp(25px, 7.5vw, 34px) }
-            .art-center.invitation-copy small { margin-top: 11px; font-size: 8px; letter-spacing: .12em }
+            .detail-art.invitation-art { min-height: 340px; padding: 16px }
+            .postcard-paper { width: min(86%, 350px); min-height: 285px; padding: 38px 22px 30px }
+            .postcard-heading { font-size: clamp(27px, 7vw, 35px) }
+            .nav { gap: 8px; padding: 12px 12px; align-items: flex-start }
+            .nav .brand { display: none }
+            .nav-links { width: 100%; justify-content: flex-start; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 1px 6px }
+            .nav-links::-webkit-scrollbar { display: none }
+            .nav .nav-links a { padding: 9px 12px; font-size: 8px; letter-spacing: .08em }
         }
 
         @media(prefers-reduced-motion: reduce) {
-            .invitation-visual *, .invitation-visual *:before, .invitation-visual *:after { animation: none !important; transition: none !important }
-            .invitation-rays, .invitation-cloud, .invitation-particles { opacity: .8 }
-            .invitation-arch { opacity: .94; scale: 1 }
-            .invitation-arch circle { stroke-dashoffset: 0 }
-            .invitation-heart.left, .invitation-heart.right { opacity: 1; transform: translate(0, -50%) }
-            .invitation-heart.center { opacity: 1; transform: translate(-50%, -50%) scale(1) }
-            .art-center.invitation-copy .invitation-title, .art-center.invitation-copy small { opacity: 1; filter: none }
+            .postcard-paper, .postcard-petals i { animation: none !important; opacity: 1; transform: none }
+            .postcard-petals { display: none }
+            html { scroll-behavior: auto }
         }
     </style>
 </head>
 
 <body>
     <main class="site">
-        <nav class="nav">
-            <div class="brand">Nikki &amp; Ebin</div><a href="#details">The celebration</a>
+        <nav class="nav" aria-label="Main navigation">
+            <a class="brand" href="#top" aria-label="Nikki and Ebin, back to top">Nikki &amp; Ebin</a>
+            <div class="nav-links">
+                <a href="#welcome">Welcome</a>
+                <a href="#details">Event details</a>
+                <a href="#teams">Cast your vote</a>
+                <a href="#contact">Contact</a>
+            </div>
         </nav>
-        <header class="hero" aria-label="Nikki and Ebin in the autumn">
+        <header class="hero" id="top" aria-label="Nikki and Ebin in the autumn">
             <div class="leaf-drift" aria-hidden="true">
                 <span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span>
             </div>
@@ -2008,23 +2014,20 @@
                             href="#">＋ Google Calendar</a><a class="button" id="appleCal" href="./baby-shower.ics"
                             download>＋ Apple / iPhone Calendar</a></div>
                 </div>
-                <div class="detail-art invitation-art" role="img" aria-label="Little Love Is On The Way. Nikki and Ebin, Big Day 2026.">
+                <div class="detail-art invitation-art" role="img" aria-label="A little celebration: Little Love on the way. Nikki and Ebin, baby shower and gender reveal, 2026.">
                     <div class="invitation-visual" aria-hidden="true">
-                        <div class="invitation-rays"></div>
-                        <i class="invitation-cloud left"></i><i class="invitation-cloud right"></i><i class="invitation-cloud bottom"></i>
-                        <div class="invitation-particles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                        <svg class="invitation-arch" viewBox="0 0 600 600" aria-hidden="true">
-                            <defs><linearGradient id="panelGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8de"/><stop offset=".48" stop-color="#c9a45a"/><stop offset="1" stop-color="#fff5d7"/></linearGradient></defs>
-                            <circle cx="300" cy="300" r="235" />
-                        </svg>
-                        <div class="invitation-hearts">
-                            <svg class="invitation-heart left" viewBox="0 0 50 46"><path d="M25 43 5.7 24.2C-5.3 12.1 11.4-4 25 10.5 38.6-4 55.3 12.1 44.3 24.2Z"/></svg>
-                            <svg class="invitation-heart right" viewBox="0 0 50 46"><path d="M25 43 5.7 24.2C-5.3 12.1 11.4-4 25 10.5 38.6-4 55.3 12.1 44.3 24.2Z"/></svg>
-                            <svg class="invitation-heart center" viewBox="0 0 50 46"><path d="M25 43 5.7 24.2C-5.3 12.1 11.4-4 25 10.5 38.6-4 55.3 12.1 44.3 24.2Z"/></svg>
-                        </div>
-                        <div class="art-center invitation-copy">
-                            <div class="invitation-title">Little Love <span>Is On The Way</span></div>
-                            <small>Nikki &amp; Ebin · BIG DAY · 2026</small>
+                        <div class="postcard-petals"><i></i><i></i><i></i><i></i></div>
+                        <div class="postcard-paper">
+                            <svg class="postcard-sprig" viewBox="0 0 60 72" aria-hidden="true">
+                                <path d="M8 65C20 48 33 29 49 7M18 51c-8-1-12-6-13-13 8 0 13 4 13 13Zm10-15c-8-2-11-7-11-14 8 1 12 6 11 14Zm10-15c-7-3-9-8-8-15 7 2 10 7 8 15Zm-9 22c7 1 12-2 15-9-8-1-13 2-15 9Zm10-16c7 1 12-2 15-8-7-2-12 1-15 8Z"/>
+                                <ellipse cx="15" cy="58" rx="3" ry="5" transform="rotate(28 15 58)"/>
+                                <ellipse cx="43" cy="29" rx="3" ry="5" transform="rotate(35 43 29)"/>
+                            </svg>
+                            <p class="postcard-kicker">A little celebration</p>
+                            <h3 class="postcard-heading">Little love <em>on the way</em></h3>
+                            <div class="postcard-rule" aria-hidden="true">✦</div>
+                            <p class="postcard-names">Nikki &amp; Ebin</p>
+                            <p class="postcard-footer">Baby shower &amp; gender reveal · 2026</p>
                         </div>
                     </div>
                 </div>
@@ -2054,7 +2057,7 @@
             </div>
             <p class="count-hint" id="countHint">Connecting to Firebase for shared team totals…</p>
         </section>
-        <section class="contact reveal">
+        <section class="contact reveal" id="contact">
             <div class="kicker">Questions? Just call</div>
             <h2>With love, Nikki &amp; Ebin</h2>
             <p>We’re looking forward to celebrating with you.</p>
