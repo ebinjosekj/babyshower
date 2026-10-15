@@ -394,6 +394,51 @@
             margin-top: 4px
         }
 
+        .dress-code-note {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-top: 16px;
+            padding: 15px 17px;
+            border: 1px solid #e3cde8;
+            border-radius: 15px;
+            background: linear-gradient(120deg, #fff7fb, #f4f1ff 55%, #eff9ff);
+            color: #49394f;
+            box-shadow: 0 9px 24px #694f7918;
+            animation: dressCodeGlow 4s ease-in-out infinite
+        }
+
+        .dress-code-icon {
+            display: grid;
+            place-items: center;
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffffc9;
+            font-size: 20px
+        }
+
+        .dress-code-label {
+            display: block;
+            margin-bottom: 3px;
+            color: #8e5d91;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase
+        }
+
+        .dress-code-copy {
+            font-size: 13px;
+            line-height: 1.5
+        }
+
+        @keyframes dressCodeGlow {
+            0%, 100% { box-shadow: 0 9px 24px #694f7918 }
+            50% { box-shadow: 0 12px 30px #b889d438 }
+        }
+
         .calendar-actions {
             display: flex;
             flex-wrap: wrap;
@@ -1713,6 +1758,7 @@
         }
         @media (prefers-reduced-motion: reduce) {
             .detail-art, .team, .baby-keepsakes, .voter-list li { animation: none }
+            .dress-code-note { animation: none }
             .voter-group { transition: none }
         }
     </style>
@@ -1768,6 +1814,10 @@
                             <div class="detail-note">Tap the address for directions</div>
                         </div>
                     </div>
+                    <aside class="dress-code-note" aria-label="Recommended guest dress code">
+                        <span class="dress-code-icon" aria-hidden="true">✿</span>
+                        <div class="dress-code-copy"><span class="dress-code-label">Guest dress code</span>Pastel shades or white are recommended.</div>
+                    </aside>
                     <div class="calendar-actions"><a class="button" id="googleCal" target="_blank" rel="noopener"
                             href="#">＋ Google Calendar</a><a class="button" id="appleCal" href="./baby-shower.ics"
                             download>＋ Apple / iPhone Calendar</a></div>
