@@ -1452,6 +1452,67 @@
                 transform: none
             }
         }
+
+        /* Gentle motion and direct interaction feedback */
+        html { scroll-padding-top: 18px }
+        .reveal { scroll-margin-top: 18px; will-change: opacity, transform }
+        .intro:before { animation-duration: 14s }
+        .intro:after { animation: twinkle 5.5s ease-in-out infinite alternate }
+        .hero .leaf-drift span { animation-duration: 18s }
+        .team { animation-duration: 26s }
+        .team-card { animation-duration: 5.5s; touch-action: manipulation }
+        .team-card.girl { animation-duration: 6s }
+        .team-card .emoji { animation-duration: 3.6s }
+        .team-card[aria-pressed="true"] {
+            box-shadow: 0 0 0 3px #f4cf7d55, 0 12px 30px #0005;
+            transform: translateY(-4px) scale(1.02)
+        }
+        .team-card:active { transform: scale(.97) }
+        .team-card:focus-visible, .button:focus-visible, .phones a:focus-visible,
+        .nav a:focus-visible, .scroll-cue:focus-visible {
+            outline: 3px solid #f4cf7d;
+            outline-offset: 4px
+        }
+        .button, .team-card, .detail-value a, .nav a, .phones a {
+            -webkit-tap-highlight-color: transparent
+        }
+        .button:active, .detail-value a:active, .phones a:active { transform: scale(.97) }
+        .countdown .time strong { font-variant-numeric: tabular-nums; transition: color .25s ease }
+        #seconds { animation: tickPulse 3s ease-in-out infinite alternate }
+        .team.vote-confirmed { animation: voteGlow .7s ease-out }
+        .vote-message.vote-confirmed { animation: voteMessageIn .42s ease-out }
+        .vote-spark {
+            position: absolute; z-index: 3; left: 50%; top: 66%;
+            pointer-events: none; color: var(--spark-color);
+            font-size: 17px; line-height: 1;
+            animation: voteSpark .9s cubic-bezier(.18,.72,.25,1) both
+        }
+        .balloon { animation-duration: 19s }
+        .balloon.rose { animation-duration: 22s }
+        .balloon.gold { animation-duration: 25s }
+        .confetti i { animation-duration: 17s }
+        .teddy { animation-duration: 4.4s }
+        .baby-shoes { animation-duration: 4s }
+        .tiny-shoe { animation-duration: 3.2s }
+        @keyframes voteGlow {
+            0% { box-shadow: inset 0 0 0 0 #f4cf7d00 }
+            45% { box-shadow: inset 0 0 90px 0 #f4cf7d1e }
+            100% { box-shadow: inset 0 0 0 0 #f4cf7d00 }
+        }
+        @keyframes voteMessageIn {
+            0% { opacity: .65; transform: translateY(7px) scale(.98) }
+            70% { opacity: 1; transform: translateY(-2px) scale(1.01) }
+            100% { opacity: 1; transform: none }
+        }
+        @keyframes voteSpark {
+            0% { opacity: 0; transform: translate(-50%,-50%) scale(.45) rotate(-15deg) }
+            15% { opacity: .95 }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(.25) rotate(130deg) }
+        }
+        @media (hover:hover) {
+            .team-card:hover { transform: translateY(-5px) scale(1.02) }
+            .button:hover, .detail-value a:hover, .phones a:hover { filter: brightness(1.08) }
+        }
     </style>
 </head>
 
@@ -1528,9 +1589,9 @@
             <label class="team-name-label" for="guestName">Your name</label><input class="team-name-input"
                 id="guestName" type="text" maxlength="40" autocomplete="name" placeholder="Type your name"
                 aria-describedby="teamMessage">
-            <div class="teams"><button type="button" class="team-card boy" data-team="boy"><span
+            <div class="teams"><button type="button" class="team-card boy" data-team="boy" aria-label="Join Team Boy" aria-pressed="false"><span
                         class="emoji">🩵</span>Team Boy<small>Join Team Boy</small></button><button type="button"
-                    class="team-card girl" data-team="girl"><span class="emoji">🩷</span>Team Girl<small>Join Team
+                    class="team-card girl" data-team="girl" aria-label="Join Team Girl" aria-pressed="false"><span class="emoji">🩷</span>Team Girl<small>Join Team
                         Girl</small></button></div>
             <div class="vote-message" id="teamMessage" aria-live="polite"></div>
             <div class="team-counts" aria-live="polite"><span>🩵 Team Boy <b id="boyCount">0</b></span><span>🩷 Team
@@ -1563,16 +1624,25 @@
         const eventStart = new Date('2026-11-21T18:00:00-05:00');
         const eventEnd = new Date('2026-11-21T21:00:00-05:00');
         const pad = n => String(n).padStart(2, '0');
+        function updateClockValue(id, value) {
+            const element = document.getElementById(id);
+            const next = String(value);
+            if (element.textContent === next) return;
+            element.textContent = next;
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && element.animate) {
+                element.animate([{ opacity: .65, transform: 'translateY(4px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 280, easing: 'ease-out' });
+            }
+        }
         function updateCountdown() {
             let distance = eventStart.getTime() - Date.now();
             if (distance <= 0) { document.querySelector('.countdown').innerHTML = '<div class="time"><strong>It’s</strong><span>celebration time!</span></div>'; return; }
             const days = Math.floor(distance / 86400000); distance %= 86400000;
             const hours = Math.floor(distance / 3600000); distance %= 3600000;
             const minutes = Math.floor(distance / 60000); const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById('days').textContent = days;
-            document.getElementById('hours').textContent = pad(hours);
-            document.getElementById('minutes').textContent = pad(minutes);
-            document.getElementById('seconds').textContent = pad(seconds);
+            updateClockValue('days', days);
+            updateClockValue('hours', pad(hours));
+            updateClockValue('minutes', pad(minutes));
+            updateClockValue('seconds', pad(seconds));
         }
         updateCountdown(); setInterval(updateCountdown, 1000);
 
@@ -1638,6 +1708,7 @@
             joinButtons.forEach(button => {
                 const isCurrent = button.dataset.team === currentTeam;
                 button.classList.toggle('selected', isCurrent);
+                button.setAttribute('aria-pressed', String(isCurrent));
                 button.disabled = false;
                 button.querySelector('small').textContent = isCurrent
                     ? 'Your current team'
@@ -1674,6 +1745,33 @@
                 return null;
             })
             : Promise.resolve(null);
+
+        function celebrateVote(team) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const section = document.getElementById('teams');
+            section.classList.remove('vote-confirmed');
+            teamMessage.classList.remove('vote-confirmed');
+            void section.offsetWidth;
+            section.classList.add('vote-confirmed');
+            teamMessage.classList.add('vote-confirmed');
+            window.setTimeout(() => {
+                section.classList.remove('vote-confirmed');
+                teamMessage.classList.remove('vote-confirmed');
+            }, 950);
+            const symbol = team === 'boy' ? '♥' : '♥';
+            const color = team === 'boy' ? '#88c9f0' : '#f19fbd';
+            for (let i = 0; i < 7; i++) {
+                const particle = document.createElement('span');
+                particle.className = 'vote-spark';
+                particle.setAttribute('aria-hidden', 'true');
+                particle.textContent = i % 3 === 0 ? '✦' : symbol;
+                particle.style.setProperty('--spark-color', i % 3 === 0 ? '#f4cf7d' : color);
+                particle.style.setProperty('--x', (Math.random() * 180 - 90) + 'px');
+                particle.style.setProperty('--y', (Math.random() * -95 - 25) + 'px');
+                section.appendChild(particle);
+                window.setTimeout(() => particle.remove(), 1000);
+            }
+        }
 
         async function joinTeam(team) {
             const guestName = guestNameInput.value.trim().replace(/\s+/g, ' ');
@@ -1717,6 +1815,7 @@
                     localStorage.setItem('babyShowerGuestName', guestName);
                 }
                 updateVoteButtons(team);
+                celebrateVote(team);
                 teamMessage.textContent = existingVote.exists()
                     ? 'Your prediction changed to Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is updated.'
                     : guestName + ', you joined Team ' + (team === 'boy' ? 'Boy' : 'Girl') + '! Your vote is saved.';
@@ -1745,18 +1844,7 @@
             if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
         }), { threshold: .12 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        document.addEventListener('pointerdown', event => {
-            for (let i = 0; i < 5; i++) {
-                const dot = document.createElement('i');
-                dot.className = 'spark';
-                dot.style.left = event.clientX + 'px';
-                dot.style.top = event.clientY + 'px';
-                dot.style.setProperty('--x', (Math.random() * 70 - 35) + 'px');
-                dot.style.setProperty('--y', (Math.random() * -65 - 10) + 'px');
-                document.body.appendChild(dot);
-                setTimeout(() => dot.remove(), 700);
-            }
-        });
+
     </script>
 </body>
 
