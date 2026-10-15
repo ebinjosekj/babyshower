@@ -1788,7 +1788,17 @@
             background: conic-gradient(from 255deg at 50% 0%, transparent 0 9deg, #fff6de45 11deg 15deg, transparent 17deg 25deg, #fff8e94a 27deg 31deg, transparent 34deg 43deg, #fff8e93d 45deg 51deg, transparent 53deg 360deg);
             filter: blur(14px);
             opacity: 0;
-            animation: panel-rays-in 1.6s ease-out .2s forwards
+            animation: panel-rays-in .65s ease-out .08s forwards
+        }
+
+        .invitation-rays:after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(108deg, transparent 42%, #fffbe6a8 49%, #fff8dc 50%, #fffbe6a8 51%, transparent 58%);
+            opacity: 0;
+            transform: translateX(-65%);
+            animation: panel-light-sweep 1.05s cubic-bezier(.2,.7,.2,1) .16s forwards
         }
 
         .invitation-cloud {
@@ -1803,14 +1813,14 @@
                 radial-gradient(ellipse at 50% 44%, #dfc99f58 0 32%, transparent 68%);
             filter: blur(14px);
             opacity: 0;
-            animation: panel-cloud-in 1.8s ease-out .25s forwards, panel-cloud-drift 34s ease-in-out 2s infinite alternate
+            animation: panel-cloud-in .75s ease-out .1s forwards, panel-cloud-drift 21s ease-in-out .9s infinite alternate
         }
 
         .invitation-cloud.left { left: -29%; top: 12% }
         .invitation-cloud.right { right: -31%; top: 31%; animation-delay: .4s, -12s }
         .invitation-cloud.bottom { left: 18%; bottom: -22%; width: 86%; animation-delay: .55s, -18s }
 
-        .invitation-particles { position: absolute; inset: 0; opacity: 0; animation: panel-particles-in 1.4s ease-out .85s forwards }
+        .invitation-particles { position: absolute; inset: 0; opacity: 0; animation: panel-particles-in .55s ease-out .35s forwards }
         .invitation-particles i {
             position: absolute;
             left: var(--x);
@@ -1820,16 +1830,16 @@
             border-radius: 50%;
             background: #fff9df;
             box-shadow: 0 0 7px 2px #d7b56a80, 0 0 15px 3px #e8cf8d58;
-            animation: panel-particle-float var(--duration, 12s) ease-in-out var(--delay, 0s) infinite alternate
+            animation: panel-particle-float var(--duration, 7s) ease-in-out var(--delay, 0s) infinite alternate
         }
 
-        .invitation-particles i:nth-child(1) { --x: 18%; --y: 24%; --size: 4px; --duration: 13s; --delay: -5s }
-        .invitation-particles i:nth-child(2) { --x: 78%; --y: 23%; --size: 3px; --duration: 15s; --delay: -8s }
-        .invitation-particles i:nth-child(3) { --x: 86%; --y: 63%; --size: 4px; --duration: 12s; --delay: -2s }
-        .invitation-particles i:nth-child(4) { --x: 12%; --y: 69%; --size: 3px; --duration: 16s; --delay: -10s }
-        .invitation-particles i:nth-child(5) { --x: 34%; --y: 14%; --size: 3px; --duration: 14s; --delay: -4s }
-        .invitation-particles i:nth-child(6) { --x: 65%; --y: 84%; --size: 4px; --duration: 17s; --delay: -9s }
-        .invitation-particles i:nth-child(7) { --x: 91%; --y: 43%; --size: 3px; --duration: 12s; --delay: -7s }
+        .invitation-particles i:nth-child(1) { --x: 18%; --y: 24%; --size: 4px; --duration: 6s; --delay: -2s }
+        .invitation-particles i:nth-child(2) { --x: 78%; --y: 23%; --size: 3px; --duration: 7s; --delay: -4s }
+        .invitation-particles i:nth-child(3) { --x: 86%; --y: 63%; --size: 4px; --duration: 5.5s; --delay: -1s }
+        .invitation-particles i:nth-child(4) { --x: 12%; --y: 69%; --size: 3px; --duration: 7.5s; --delay: -5s }
+        .invitation-particles i:nth-child(5) { --x: 34%; --y: 14%; --size: 3px; --duration: 6.5s; --delay: -2s }
+        .invitation-particles i:nth-child(6) { --x: 65%; --y: 84%; --size: 4px; --duration: 8s; --delay: -6s }
+        .invitation-particles i:nth-child(7) { --x: 91%; --y: 43%; --size: 3px; --duration: 5.8s; --delay: -3s }
 
         .invitation-arch {
             position: absolute;
@@ -1841,10 +1851,10 @@
             transform: translate(-50%, -50%);
             opacity: 0;
             filter: drop-shadow(0 0 5px #d6b25e80) drop-shadow(0 0 18px #e6cf8a66);
-            animation: panel-arch-in 1.8s cubic-bezier(.2,.7,.2,1) 1.55s forwards, panel-arch-breathe 6s ease-in-out 3.5s infinite
+            animation: panel-arch-in .8s cubic-bezier(.2,.7,.2,1) .48s forwards, panel-arch-breathe 3.8s ease-in-out 1.3s infinite
         }
 
-        .invitation-arch circle { fill: none; stroke: url(#panelGold); stroke-width: 1.5 }
+        .invitation-arch circle { fill: none; stroke: url(#panelGold); stroke-width: 1.5; stroke-dasharray: 1477; stroke-dashoffset: 1477; animation: panel-arch-draw 1.05s cubic-bezier(.2,.7,.2,1) .38s forwards }
 
         .invitation-hearts {
             position: absolute;
@@ -1866,9 +1876,9 @@
             opacity: 0
         }
 
-        .invitation-heart.left { right: calc(50% + 10px); animation: panel-heart-left 1.9s cubic-bezier(.2,.8,.25,1) 2.65s forwards, panel-heart-glow 4.8s ease-in-out 4.6s infinite }
-        .invitation-heart.right { left: calc(50% + 10px); animation: panel-heart-right 1.9s cubic-bezier(.2,.8,.25,1) 2.65s forwards, panel-heart-glow 4.8s ease-in-out 4.6s infinite }
-        .invitation-heart.center { left: 50%; top: 49%; width: 13px; height: 13px; fill: #d5b360; transform: translate(-50%, -50%) scale(.5); animation: panel-heart-center 1s cubic-bezier(.16,1,.3,1) 4.55s forwards, panel-heart-glow 4s ease-in-out 5.55s infinite }
+        .invitation-heart.left { right: calc(50% + 10px); animation: panel-heart-left .65s cubic-bezier(.2,.8,.25,1) .85s forwards, panel-heart-glow 3s ease-in-out 1.6s infinite }
+        .invitation-heart.right { left: calc(50% + 10px); animation: panel-heart-right .65s cubic-bezier(.2,.8,.25,1) .85s forwards, panel-heart-glow 3s ease-in-out 1.6s infinite }
+        .invitation-heart.center { left: 50%; top: 49%; width: 13px; height: 13px; fill: #d5b360; transform: translate(-50%, -50%) scale(.5); animation: panel-heart-center .48s cubic-bezier(.16,1,.3,1) 1.38s forwards, panel-heart-glow 2.8s ease-in-out 1.9s infinite }
 
         .art-center.invitation-copy {
             position: absolute;
@@ -1887,7 +1897,7 @@
             letter-spacing: -.035em;
             text-shadow: 0 1px 18px #fffaf0a8;
             opacity: 0;
-            animation: panel-title-in 1.3s cubic-bezier(.2,.7,.2,1) 4.9s forwards
+            animation: panel-title-in .65s cubic-bezier(.2,.7,.2,1) 1.55s forwards
         }
 
         .invitation-title span { display: block; font-style: italic }
@@ -1899,17 +1909,19 @@
             font: 600 9px/1.5 "DM Sans", sans-serif;
             letter-spacing: .18em;
             opacity: 0;
-            animation: panel-title-in 1.1s ease-out 5.65s forwards
+            animation: panel-title-in .5s ease-out 1.95s forwards
         }
 
         .details:not(.visible) .invitation-visual * { animation-play-state: paused }
 
         @keyframes panel-rays-in { from { opacity: 0 } to { opacity: .7 } }
+        @keyframes panel-light-sweep { 0% { opacity: 0; transform: translateX(-65%) } 18% { opacity: .85 } 100% { opacity: 0; transform: translateX(65%) } }
         @keyframes panel-cloud-in { from { opacity: 0 } to { opacity: .74 } }
         @keyframes panel-cloud-drift { from { transform: translate3d(-2%, 0, 0) } to { transform: translate3d(3%, -5%, 0) } }
         @keyframes panel-particles-in { from { opacity: 0 } to { opacity: .9 } }
         @keyframes panel-particle-float { from { transform: translate3d(0, 5px, 0); opacity: .48 } to { transform: translate3d(6px, -8px, 0); opacity: 1 } }
         @keyframes panel-arch-in { from { opacity: 0; scale: .88 } to { opacity: .94; scale: 1 } }
+        @keyframes panel-arch-draw { to { stroke-dashoffset: 0 } }
         @keyframes panel-arch-breathe { 0%, 100% { filter: drop-shadow(0 0 5px #d6b25e80) drop-shadow(0 0 18px #e6cf8a66) } 50% { filter: drop-shadow(0 0 8px #d6b25eaa) drop-shadow(0 0 26px #e6cf8a88) } }
         @keyframes panel-heart-left { from { opacity: 0; transform: translate(-21px, -50%) scale(.7) } to { opacity: 1; transform: translate(0, -50%) scale(1) } }
         @keyframes panel-heart-right { from { opacity: 0; transform: translate(21px, -50%) scale(.7) } to { opacity: 1; transform: translate(0, -50%) scale(1) } }
@@ -1930,6 +1942,7 @@
             .invitation-visual *, .invitation-visual *:before, .invitation-visual *:after { animation: none !important; transition: none !important }
             .invitation-rays, .invitation-cloud, .invitation-particles { opacity: .8 }
             .invitation-arch { opacity: .94; scale: 1 }
+            .invitation-arch circle { stroke-dashoffset: 0 }
             .invitation-heart.left, .invitation-heart.right { opacity: 1; transform: translate(0, -50%) }
             .invitation-heart.center { opacity: 1; transform: translate(-50%, -50%) scale(1) }
             .art-center.invitation-copy .invitation-title, .art-center.invitation-copy small { opacity: 1; filter: none }
