@@ -10,8 +10,8 @@
       }
     },
     "guestNames": {
+      ".read": true,
       "$uid": {
-        ".read": "auth !== null && auth.uid === $uid",
         ".write": "auth !== null && auth.uid === $uid && !data.exists()",
         ".validate": "newData.hasChildren(['guestName', 'createdAt'])",
         "guestName": {

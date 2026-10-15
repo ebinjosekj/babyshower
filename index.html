@@ -641,6 +641,47 @@
             margin: 7px 0 0 !important
         }
 
+        .voter-lists {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            width: min(560px, 100%);
+            margin: 22px auto 0;
+            text-align: left
+        }
+
+        .voter-group {
+            padding: 14px 16px;
+            border: 1px solid #fff2;
+            border-radius: 8px;
+            background: #211b1780
+        }
+
+        .voter-group h3 {
+            margin: 0 0 8px;
+            font: 600 11px "DM Sans", sans-serif;
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .voter-group.boy h3 { color: var(--blue) }
+        .voter-group.girl h3 { color: var(--rose) }
+
+        .voter-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8
+        }
+
+        .voter-list li:only-child { color: #c7b29eaa; font-style: italic }
+
+        @media(max-width:520px) {
+            .voter-lists { grid-template-columns: 1fr }
+        }
+
         .balloons {
             position: absolute;
             inset: 0;
@@ -1733,6 +1774,10 @@
             <div class="vote-message" id="teamMessage" aria-live="polite"></div>
             <div class="team-counts" aria-live="polite"><span>🩵 Team Boy <b id="boyCount">0</b></span><span>🩷 Team
                     Girl <b id="girlCount">0</b></span></div>
+            <div class="voter-lists" aria-label="People who voted">
+                <section class="voter-group boy" aria-labelledby="boyVotersTitle"><h3 id="boyVotersTitle">🩵 Team Boy</h3><ul class="voter-list" id="boyVoters"><li>Loading voters…</li></ul></section>
+                <section class="voter-group girl" aria-labelledby="girlVotersTitle"><h3 id="girlVotersTitle">🩷 Team Girl</h3><ul class="voter-list" id="girlVoters"><li>Loading voters…</li></ul></section>
+            </div>
             <p class="count-hint" id="countHint">Connecting to Firebase for shared team totals…</p>
         </section>
         <section class="contact reveal">
@@ -1794,6 +1839,8 @@
         const countHint = document.getElementById('countHint');
         const boyCount = document.getElementById('boyCount');
         const girlCount = document.getElementById('girlCount');
+        const boyVoters = document.getElementById('boyVoters');
+        const girlVoters = document.getElementById('girlVoters');
         const joinButtons = [...document.querySelectorAll('.team-card')];
         const savedName = localStorage.getItem('babyShowerGuestName');
         if (savedName) guestNameInput.value = savedName;
@@ -1829,9 +1876,34 @@
                 boyCount.textContent = boys.toLocaleString();
                 girlCount.textContent = girls.toLocaleString();
                 countHint.textContent = 'Live team totals';
+                renderVoters(snapshot);
             }, error => {
                 console.error('Could not read team totals:', error);
                 countHint.textContent = 'Could not load team totals. ' + friendlyError(error);
+            });
+        }
+
+        function renderVoters(votesSnapshot) {
+            get(ref(db, 'guestNames')).then(namesSnapshot => {
+                const names = namesSnapshot.val() || {};
+                const groups = { boy: [], girl: [] };
+                votesSnapshot.forEach(child => {
+                    const team = child.val();
+                    if (groups[team]) groups[team].push(names[child.key]?.guestName || 'Guest');
+                });
+                for (const [team, list] of Object.entries({ boy: boyVoters, girl: girlVoters })) {
+                    list.replaceChildren();
+                    const voters = groups[team].sort((a, b) => a.localeCompare(b));
+                    (voters.length ? voters : ['No votes yet']).forEach(name => {
+                        const item = document.createElement('li');
+                        item.textContent = name;
+                        list.appendChild(item);
+                    });
+                }
+            }).catch(error => {
+                console.error('Could not load voter names:', error);
+                boyVoters.replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Could not load voter names' }));
+                girlVoters.replaceChildren(Object.assign(document.createElement('li'), { textContent: 'Could not load voter names' }));
             });
         }
 

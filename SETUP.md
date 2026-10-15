@@ -1,6 +1,6 @@
 # Firebase setup for team votes
 
-The site writes team votes to Firebase Realtime Database. Public vote data contains only the team choice. Guest names are stored separately so each guest can read only their own name. A hashed name claim prevents another account from registering the same name (ignoring capitalization and repeated spaces).
+The site writes team votes to Firebase Realtime Database. Team choices and the names associated with votes are publicly readable so the voting section can show who voted for each team. Each guest can only write their own name. A hashed name claim prevents another account from registering the same name (ignoring capitalization and repeated spaces).
 
 1. In Firebase Authentication, enable **Anonymous** sign-in.
 2. In **Authentication → Settings → Authorized domains**, add `ebinjosekj.github.io` (the GitHub Pages host).
