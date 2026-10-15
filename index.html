@@ -1942,30 +1942,7 @@
         }
         .nav .nav-links a:hover,
         .nav .nav-links a:focus-visible { background: #78886e; border-color: #78886e; color: #fffdf7 }
-        .nav .nav-links a:focus-visible,
-        .nav .brand:focus-visible,
-        .music-toggle:focus-visible { outline: 2px solid #78886e; outline-offset: 3px }
-        .music-toggle {
-            flex: 0 0 auto;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-height: 40px;
-            padding: 0 15px;
-            border: 1px solid #87927c;
-            border-radius: 999px;
-            color: #43503e;
-            background: #e6eadf;
-            font: 600 9px/1 "DM Sans", sans-serif;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: background .2s ease, transform .2s ease, box-shadow .2s ease
-        }
-        .music-toggle:hover { background: #d5dece; transform: translateY(-1px); box-shadow: 0 4px 12px #44533b20 }
-        .music-toggle[aria-pressed="true"] { background: #78886e; border-color: #78886e; color: #fffdf7 }
-        .music-note { font-size: 15px; line-height: 1 }
+        .nav .nav-links a:focus-visible, .nav .brand:focus-visible { outline: 2px solid #78886e; outline-offset: 3px }
         .contact { scroll-margin-top: 22px }
         #welcome, #details, #teams { scroll-margin-top: 20px }
 
@@ -1979,7 +1956,6 @@
             .nav-links { width: 100%; justify-content: flex-start; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 1px 6px }
             .nav-links::-webkit-scrollbar { display: none }
             .nav .nav-links a { padding: 9px 12px; font-size: 8px; letter-spacing: .08em }
-            .music-toggle { align-self: flex-end; min-height: 36px }
         }
 
         @media(prefers-reduced-motion: reduce) {
@@ -2007,12 +1983,8 @@
                     <a href="#teams">Cast your vote</a>
                     <a href="#contact">Contact</a>
                 </div>
-                <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false" aria-label="Play background music">
-                    <span class="music-note" aria-hidden="true">♫</span><span id="musicToggleLabel">Play music</span>
-                </button>
             </div>
         </nav>
-        <audio id="backgroundMusic" preload="none" loop src="https://cdn.pixabay.com/audio/2026/03/28/audio_599253b405.mp3" aria-label="Lullaby Baby Sleep Music by SolarFLEX"></audio>
         <section class="intro reveal" id="welcome">
             <div class="kicker">The sweetest adventure begins</div>
             <h2>One tiny wonder. So much love.</h2>
@@ -2110,7 +2082,7 @@
             <div class="phones"><a href="tel:+15197816212">Ebin · 519 781 6212</a><a href="tel:+15197310349">Nikki · 519
                     731 0349</a></div>
         </section>
-        <footer class="footer">Made with love · November 21, 2026 · Kitchener, Ontario · Background music: <a href="https://pixabay.com/music/ambient-lullaby-baby-sleep-music-509911/" target="_blank" rel="noopener">“Lullaby Baby Sleep Music” by SolarFLEX / Pixabay</a></footer>
+        <footer class="footer">Made with love · November 21, 2026 · Kitchener, Ontario</footer>
     </main>
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js';
@@ -2376,34 +2348,6 @@
             if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
         }), { threshold: .12 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        const backgroundMusic = document.getElementById('backgroundMusic');
-        const musicToggle = document.getElementById('musicToggle');
-        const musicToggleLabel = document.getElementById('musicToggleLabel');
-        backgroundMusic.volume = 0.24;
-        musicToggle.addEventListener('click', async () => {
-            if (backgroundMusic.paused) {
-                try {
-                    await backgroundMusic.play();
-                    musicToggle.setAttribute('aria-pressed', 'true');
-                    musicToggle.setAttribute('aria-label', 'Pause background music');
-                    musicToggleLabel.textContent = 'Pause music';
-                } catch (error) {
-                    musicToggleLabel.textContent = 'Music unavailable';
-                    musicToggle.setAttribute('aria-label', 'Background music unavailable');
-                }
-            } else {
-                backgroundMusic.pause();
-                musicToggle.setAttribute('aria-pressed', 'false');
-                musicToggle.setAttribute('aria-label', 'Play background music');
-                musicToggleLabel.textContent = 'Play music';
-            }
-        });
-        backgroundMusic.addEventListener('ended', () => {
-            musicToggle.setAttribute('aria-pressed', 'false');
-            musicToggle.setAttribute('aria-label', 'Play background music');
-            musicToggleLabel.textContent = 'Play music';
-        });
 
     </script>
 </body>
