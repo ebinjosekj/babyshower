@@ -651,32 +651,55 @@
         }
 
         .voter-group {
-            padding: 14px 16px;
-            border: 1px solid #fff2;
-            border-radius: 8px;
-            background: #211b1780
+            padding: 16px;
+            border: 1px solid #dfd2e8;
+            border-radius: 16px;
+            background: #ffffffed;
+            box-shadow: 0 10px 26px #59426312;
+            transition: transform .25s ease, box-shadow .25s ease
         }
 
+        .voter-group:hover { transform: translateY(-3px); box-shadow: 0 14px 30px #59426320 }
+
         .voter-group h3 {
-            margin: 0 0 8px;
-            font: 600 11px "DM Sans", sans-serif;
-            letter-spacing: .1em;
+            margin: 0 0 10px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid #eee6f0;
+            color: #47344d;
+            font: 700 12px "DM Sans", sans-serif;
+            letter-spacing: .06em;
             text-transform: uppercase
         }
 
-        .voter-group.boy h3 { color: var(--blue) }
-        .voter-group.girl h3 { color: var(--rose) }
+        .voter-group.boy { border-top: 4px solid #5c9fc4 }
+        .voter-group.girl { border-top: 4px solid #ca6b91 }
 
         .voter-list {
             margin: 0;
             padding: 0;
             list-style: none;
-            color: var(--muted);
-            font-size: 12px;
-            line-height: 1.8
+            color: #40344a;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.5
         }
 
-        .voter-list li:only-child { color: #c7b29eaa; font-style: italic }
+        .voter-list li {
+            margin-top: 6px;
+            padding: 7px 10px;
+            border-radius: 9px;
+            background: #f5f1f7;
+            animation: voterReveal .38s both
+        }
+
+        .voter-group.boy .voter-list li:not(:only-child) { background: #eaf5fb }
+        .voter-group.girl .voter-list li:not(:only-child) { background: #fff0f5 }
+        .voter-list li:only-child { color: #6d6074; font-style: italic; font-weight: 500 }
+
+        @keyframes voterReveal {
+            from { opacity: 0; transform: translateY(7px) }
+            to { opacity: 1; transform: translateY(0) }
+        }
 
         @media(max-width:520px) {
             .voter-lists { grid-template-columns: 1fr }
@@ -1689,7 +1712,8 @@
             50% { transform: translateY(-7px) }
         }
         @media (prefers-reduced-motion: reduce) {
-            .detail-art, .team, .baby-keepsakes { animation: none }
+            .detail-art, .team, .baby-keepsakes, .voter-list li { animation: none }
+            .voter-group { transition: none }
         }
     </style>
 </head>
