@@ -1964,7 +1964,91 @@
         .nav .nav-links a:focus-visible { background: #78886e; border-color: #78886e; color: #fffdf7 }
         .nav .nav-links a:focus-visible, .nav .brand:focus-visible { outline: 2px solid #78886e; outline-offset: 3px }
         .contact { scroll-margin-top: 22px }
-        #welcome, #details, #teams { scroll-margin-top: 20px }
+        #welcome, #details, #teams, #rsvp { scroll-margin-top: 20px }
+
+        .rsvp-section {
+            padding: 72px 22px;
+            background: #f7f0e4;
+            color: #4e5143
+        }
+        .rsvp-card {
+            max-width: 900px;
+            margin: auto;
+            padding: clamp(28px, 5vw, 54px);
+            border: 1px solid #dfd2bc;
+            border-radius: 26px;
+            background: #fffdf8;
+            box-shadow: 0 20px 55px #493c2518;
+            text-align: center
+        }
+        .rsvp-card .kicker { color: #9a7851 }
+        .rsvp-card h2 {
+            margin: 12px 0;
+            color: #4e5143;
+            font: 500 clamp(32px, 4.6vw, 50px)/1.1 "Playfair Display", serif
+        }
+        .rsvp-intro {
+            margin: 0 auto 26px;
+            color: #746d5d;
+            font-size: 14px
+        }
+        .rsvp-name-wrap { max-width: 460px; margin: 0 auto 24px; text-align: left }
+        .rsvp-name-wrap .team-name-label { color: #6d755c }
+        .rsvp-name-wrap .team-name-input {
+            width: 100%;
+            color: #4e5143;
+            border-color: #cfc2a9;
+            background: #fff
+        }
+        .rsvp-name-wrap .team-name-input:focus {
+            border-color: #8b9676;
+            box-shadow: 0 0 0 4px #8b96762b
+        }
+        .rsvp-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            max-width: 700px;
+            margin: 0 auto
+        }
+        .rsvp-option {
+            display: flex;
+            min-height: 116px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 18px;
+            border: 1px solid #d7c9b0;
+            border-radius: 18px;
+            background: #fff;
+            color: #4e5143;
+            font: 600 16px "DM Sans", sans-serif;
+            box-shadow: 0 8px 22px #493c2510;
+            cursor: pointer;
+            transition: transform .2s, background .2s, border-color .2s, box-shadow .2s
+        }
+        .rsvp-option:hover,
+        .rsvp-option.selected {
+            transform: translateY(-2px);
+            border-color: #b89a66;
+            background: #f8f0e1;
+            box-shadow: 0 12px 26px #7d63321c
+        }
+        .rsvp-option:focus-visible {
+            outline: 3px solid #8b9676;
+            outline-offset: 4px
+        }
+        .rsvp-option:disabled { cursor: wait; opacity: .68 }
+        .rsvp-option .emoji { font-size: 22px }
+        .rsvp-option small { color: #746d5d; font-size: 11px; font-weight: 500 }
+        .rsvp-message {
+            min-height: 24px;
+            margin: 18px auto 0;
+            color: #5b674e;
+            font-size: 13px;
+            font-weight: 600
+        }
 
         @media(max-width:700px) {
             .detail-art.invitation-art { min-height: 340px; padding: 16px }
@@ -1976,6 +2060,8 @@
             .nav-links { width: 100%; justify-content: flex-start; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 1px 6px }
             .nav-links::-webkit-scrollbar { display: none }
             .nav .nav-links a { padding: 9px 12px; font-size: 8px; letter-spacing: .08em }
+            .rsvp-section { padding: 48px 16px }
+            .rsvp-options { grid-template-columns: 1fr }
         }
 
         @media(prefers-reduced-motion: reduce) {
@@ -2000,6 +2086,7 @@
                 <div class="nav-links">
                     <a href="#welcome">Welcome</a>
                     <a href="#details">Event details</a>
+                    <a href="#rsvp">RSVP</a>
                     <a href="#teams">Cast your vote</a>
                     <a href="#contact">Contact</a>
                 </div>
@@ -2073,6 +2160,29 @@
                 </div>
             </div>
         </section>
+        <section class="rsvp-section reveal" id="rsvp" aria-labelledby="rsvpTitle">
+            <div class="rsvp-card">
+                <div class="kicker">Let us know</div>
+                <h2 id="rsvpTitle">Will you be joining us?</h2>
+                <p class="rsvp-intro">Choose the reply that feels right. You can update it anytime.</p>
+                <div class="rsvp-name-wrap">
+                    <label class="team-name-label" for="guestName">Your name</label>
+                    <input class="team-name-input" id="guestName" type="text" maxlength="40" autocomplete="name"
+                        placeholder="Type your name" aria-describedby="rsvpMessage teamMessage">
+                </div>
+                <div class="rsvp-options" role="group" aria-label="Choose your attendance response">
+                    <button type="button" class="rsvp-option" data-attendance="coming" aria-pressed="false">
+                        <span class="emoji" aria-hidden="true">🎉</span>I’m coming
+                        <small>We’ll see you there</small>
+                    </button>
+                    <button type="button" class="rsvp-option" data-attendance="blessing-online" aria-pressed="false">
+                        <span class="emoji" aria-hidden="true">💌</span>I’ll send a blessing online
+                        <small>Celebrating with you from afar</small>
+                    </button>
+                </div>
+                <div class="rsvp-message" id="rsvpMessage" aria-live="polite">Your reply will be saved securely.</div>
+            </div>
+        </section>
         <section class="team reveal" id="teams">
             <div class="balloons" aria-hidden="true">
                 <div class="confetti"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span
@@ -2081,9 +2191,7 @@
             <div class="kicker">The big question</div>
             <h2>Which team are you on?</h2>
             <p>Write your name and choose your prediction.</p>
-            <label class="team-name-label" for="guestName">Your name</label><input class="team-name-input"
-                id="guestName" type="text" maxlength="40" autocomplete="name" placeholder="Type your name"
-                aria-describedby="teamMessage">
+            <p class="team-name-label">Add your name in the RSVP section above before voting.</p>
             <div class="teams"><button type="button" class="team-card boy" data-team="boy" aria-label="Join Team Boy" aria-pressed="false"><span
                         class="emoji">🩵</span>Team Boy<small>Join Team Boy</small></button><button type="button"
                     class="team-card girl" data-team="girl" aria-label="Join Team Girl" aria-pressed="false"><span class="emoji">🩷</span>Team Girl<small>Join Team
@@ -2159,6 +2267,8 @@
         const boyVoters = document.getElementById('boyVoters');
         const girlVoters = document.getElementById('girlVoters');
         const joinButtons = [...document.querySelectorAll('.team-card')];
+        const rsvpMessage = document.getElementById('rsvpMessage');
+        const rsvpButtons = [...document.querySelectorAll('.rsvp-option')];
         const savedName = localStorage.getItem('babyShowerGuestName');
         if (savedName) guestNameInput.value = savedName;
 
@@ -2242,6 +2352,14 @@
             });
         }
 
+        function updateRsvpButtons(currentResponse) {
+            rsvpButtons.forEach(button => {
+                const isCurrent = button.dataset.attendance === currentResponse;
+                button.classList.toggle('selected', isCurrent);
+                button.setAttribute('aria-pressed', String(isCurrent));
+            });
+        }
+
         async function showExistingVote() {
             if (!db || !user) return;
             try {
@@ -2260,11 +2378,37 @@
             }
         }
 
+        async function showExistingRsvp() {
+            if (!db || !user) return;
+            try {
+                const [profileSnapshot, attendanceSnapshot] = await Promise.all([
+                    get(ref(db, 'guestNames/' + user.uid)),
+                    get(ref(db, 'guestAttendance/' + user.uid))
+                ]);
+                const guestName = profileSnapshot.val()?.guestName;
+                if (guestName) {
+                    guestNameInput.value = guestName;
+                    guestNameInput.disabled = true;
+                    localStorage.setItem('babyShowerGuestName', guestName);
+                }
+                if (attendanceSnapshot.exists()) {
+                    const response = attendanceSnapshot.val().status;
+                    updateRsvpButtons(response);
+                    rsvpMessage.textContent = response === 'coming'
+                        ? 'Thanks, ' + (guestName || guestNameInput.value || 'friend') + '. We’ll see you there! You can change your reply anytime.'
+                        : 'Thank you, ' + (guestName || guestNameInput.value || 'friend') + '. Your online blessing will be there with us. You can change your reply anytime.';
+                }
+            } catch (error) {
+                console.error('Could not check existing attendance:', error);
+                rsvpMessage.textContent = 'Could not load your saved reply. ' + friendlyError(error);
+            }
+        }
+
         const authReady = db
             ? signInAnonymously(getAuth(app)).then(credential => {
                 user = credential.user;
                 subscribeToCounts();
-                return showExistingVote().then(() => user);
+                return Promise.all([showExistingVote(), showExistingRsvp()]).then(() => user);
             }).catch(error => {
                 console.error('Firebase sign-in failed:', error);
                 countHint.textContent = 'Firebase sign-in failed. ' + friendlyError(error);
@@ -2363,7 +2507,58 @@
                 joinButtons.forEach(button => button.disabled = false);
             }
         }
+
+        async function saveAttendance(response) {
+            const guestName = guestNameInput.value.trim().replace(/\s+/g, ' ');
+            if (!guestName) {
+                guestNameInput.classList.add('needs-name');
+                guestNameInput.focus();
+                rsvpMessage.textContent = 'Enter your name before saving your reply.';
+                return;
+            }
+            guestNameInput.classList.remove('needs-name');
+            rsvpButtons.forEach(button => button.disabled = true);
+            rsvpMessage.textContent = 'Saving your reply to Firebase…';
+            try {
+                const signedInUser = await authReady;
+                if (!db || !signedInUser) throw new Error('Firebase is not connected yet.');
+
+                const profileSnapshot = await get(ref(db, 'guestNames/' + signedInUser.uid));
+                const savedGuestName = profileSnapshot.val()?.guestName;
+                const timestamp = Date.now();
+                if (savedGuestName) {
+                    await set(ref(db, 'guestAttendance/' + signedInUser.uid), { status: response, updatedAt: timestamp });
+                    guestNameInput.value = savedGuestName;
+                } else {
+                    const nameKey = await guestNameClaimKey(guestName);
+                    const claimSnapshot = await get(ref(db, 'nameClaims/' + nameKey));
+                    if (claimSnapshot.exists() && claimSnapshot.val() !== signedInUser.uid) {
+                        rsvpMessage.textContent = 'That name has already been used. Please try your full name or add a last initial.';
+                        return;
+                    }
+                    const updates = {};
+                    updates['nameClaims/' + nameKey] = signedInUser.uid;
+                    updates['guestNames/' + signedInUser.uid] = { guestName, createdAt: timestamp };
+                    updates['guestAttendance/' + signedInUser.uid] = { status: response, updatedAt: timestamp };
+                    await update(ref(db), updates);
+                    guestNameInput.value = guestName;
+                }
+                guestNameInput.disabled = true;
+                localStorage.setItem('babyShowerGuestName', guestNameInput.value);
+                updateRsvpButtons(response);
+                rsvpMessage.textContent = response === 'coming'
+                    ? 'Thanks, ' + guestNameInput.value + '. We’ll see you there! You can change your reply anytime.'
+                    : 'Thank you, ' + guestNameInput.value + '. Your online blessing will be there with us. You can change your reply anytime.';
+            } catch (error) {
+                console.error('Could not save attendance to Firebase:', error);
+                rsvpMessage.textContent = 'Your reply was not saved. ' + friendlyError(error);
+            } finally {
+                rsvpButtons.forEach(button => button.disabled = false);
+            }
+        }
+
         joinButtons.forEach(button => button.addEventListener('click', () => joinTeam(button.dataset.team)));
+        rsvpButtons.forEach(button => button.addEventListener('click', () => saveAttendance(button.dataset.attendance)));
         guestNameInput.addEventListener('input', () => guestNameInput.classList.remove('needs-name'));
 
         const observer = new IntersectionObserver(entries => entries.forEach(entry => {
